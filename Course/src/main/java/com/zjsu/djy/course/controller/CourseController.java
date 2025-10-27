@@ -15,7 +15,6 @@ import java.util.Map;
 
 /**
  * 课程管理API：极简实现，仅保留核心逻辑
- * 对应文档1-12至1-25的课程管理接口
  */
 @RestController
 @RequestMapping("/api/courses")
