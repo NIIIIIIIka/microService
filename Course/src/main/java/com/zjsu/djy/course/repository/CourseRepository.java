@@ -1,8 +1,9 @@
 package com.zjsu.djy.course.repository;
 
 import com.zjsu.djy.course.model.Course;
-import com.zjsu.djy.course.model.Instructor;
-import com.zjsu.djy.course.model.ScheduleSlot;
+import com.zjsu.djy.course.service.CourseService;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -17,53 +18,38 @@ import java.util.concurrent.atomic.AtomicLong;
  * 课程数据访问：基于ConcurrentHashMap的内存存储，完全遵循文档1-94/1-97要求
  */
 @Repository
-public class CourseRepository {
+public interface CourseRepository extends JpaRepository<Course,String> {
     // 线程安全的Map存储课程（key=课程ID，文档1-97示例）
-    private final Map<String, Course> courses = new ConcurrentHashMap<>();
-    private final AtomicLong idCounter = new AtomicLong(1);
-
-    public CourseRepository() {
-    }
-    /**
-     * 查询所有课程：对应文档1-14 GET /api/courses
-     */
-    public List<Course> findAll() {
-
-        return new ArrayList<>(courses.values());
-    }
 
     /**
-     * 根据ID查询课程：对应文档1-16 GET /api/courses/{id}
+     * 统计/筛选有剩余容量的课程
+     * （假设Course实体中有totalCapacity总容量和currentEnrollment当前报名人数字段）
+     *
+     * @return 剩余容量>0的课程列表
      */
-    public Optional<Course> findById(String id) {
-
-        return Optional.ofNullable(courses.get(id));
-    }
-
+    List<Course> findByCodeAndInstructorTeacherId(String code, String teacherId);
+    @Query("SELECT c FROM Course c WHERE c.enrolled < c.capacity")
+    List<Course> findCoursesWithEnrolledLessThanCapacity();
+//    List<Course> findByEnrolledLessThanCapacity();
+    List<Course> findByCode(String code);
+    List<Course> findByInstructorTeacherId(String teacherId);
     /**
-     * 保存课程（创建/更新）：创建时自动生成UUID（文档1-18 POST /api/courses）
+     * 按标题关键字模糊查询课程
+     * （忽略大小写，匹配标题中包含关键字的课程）
+     *
+     * @param keyword 标题关键字
+     * @return 符合条件的课程列表
      */
-    public Course save(Course course) {
-        // 1. 字符串比较应使用equals()而非==，避免引用比较导致的逻辑错误
-        // 2. 生成新UUID通常用于新增场景，更新时一般不应修改ID，此处假设需求是"当code匹配时重新生成ID"，保留逻辑但修正比较方式
-        // 确保ID不为空再存入（避免空键异常）
-        if (course.getId() == null) {
-            course.setId(UUID.randomUUID().toString());
-        }
-
-        courses.put(course.getId(), course);
-        return course;
-    }
-    public Course createCourse(Course course){
-        String id=UUID.randomUUID().toString();
-        course.setId(id);
-        courses.put(id, course);
-        return course;
-    }
+    List<Course> findByTitleContainingIgnoreCase(String keyword);
+    boolean existsByCode(String code);
+//    public Course createCourse(Course course){
+//        String id=UUID.randomUUID().toString();
+//        course.setId(id);
+//        courses.put(id, course);
+//        return course;
+//    }
     /**
      * 根据ID删除课程：对应文档1-24 DELETE /api/courses/{id}
      */
-    public void deleteById(String id) {
-        courses.remove(id);
-    }
+
 }

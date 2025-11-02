@@ -37,11 +37,12 @@ public class CourseController {
 
     // 创建课程（POST /api/courses）
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createCourse(@RequestBody Course course) {
+    public ApiResponse<Object>  createCourse(@RequestBody Course course) {
         if (course.getCode()==null)
-            return success("code is need",HttpStatus.BAD_REQUEST);
+            return ApiResponse.success("code is need");
+//        return ApiResponse.success(course);
         Course saved = courseService.createCourse(course);
-        return success(saved, HttpStatus.CREATED); // 创建成功用201状态码
+        return ApiResponse.created(saved); // 创建成功用201状态码
     }
 
     // 更新课程（PUT /api/courses/{id}）

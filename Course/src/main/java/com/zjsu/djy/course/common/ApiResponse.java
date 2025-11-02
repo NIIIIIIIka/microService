@@ -1,8 +1,12 @@
 package com.zjsu.djy.course.common;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class ApiResponse<T> {
+    // Getters and Setters
     private int code;
     private String message;
     private T data;
@@ -17,6 +21,7 @@ public class ApiResponse<T> {
 
     // 成功响应 - 带数据
     public static <T> ApiResponse<T> success(T data) {
+
         return new ApiResponse<>(200, "Success", data);
     }
 
@@ -45,25 +50,12 @@ public class ApiResponse<T> {
         return new ApiResponse<>(404, message, null);
     }
 
-    // Getters and Setters
-    public int getCode() {
-        return code;
-    }
-
     public void setCode(int code) {
         this.code = code;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public T getData() {
-        return data;
     }
 
     public void setData(T data) {

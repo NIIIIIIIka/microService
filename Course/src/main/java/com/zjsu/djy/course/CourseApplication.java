@@ -1,9 +1,5 @@
 package com.zjsu.djy.course;
-import com.zjsu.djy.course.model.Course;
-import com.zjsu.djy.course.model.Instructor;
-import com.zjsu.djy.course.model.ScheduleSlot;
 import com.zjsu.djy.course.service.CourseService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

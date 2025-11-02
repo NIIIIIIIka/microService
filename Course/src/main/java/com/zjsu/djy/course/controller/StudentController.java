@@ -24,29 +24,30 @@ public class StudentController {
 
     // 查询所有学生（GET /api/students）
     @GetMapping
-    public ResponseEntity<Map<String, Object>> getAllStudents() {
-        return success(studentService.getAllStudents());
+    public ApiResponse<Object>  getAllStudents() {
+
+        return ApiResponse.success(studentService.getAllStudents());
     }
 
     // 查询单个学生（GET /api/students/{id}）
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getStudentById(@PathVariable String id) {
-        return success(studentService.getStudentById(id));
+    public ApiResponse<Object>  getStudentById(@PathVariable String id) {
+        return ApiResponse.success(studentService.getStudentById(id));
     }
 
     // 创建学生（POST /api/students）
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createStudent(@RequestBody Student student) {
-        return success(studentService.createStudent(student), HttpStatus.CREATED);
+    public ApiResponse<Object>  createStudent(@RequestBody Student student) {
+        return ApiResponse.created(studentService.createStudent(student));
     }
 
     // 更新学生（PUT /api/students/{id}）
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateStudent(
+    public ApiResponse<Object>  updateStudent(
             @PathVariable String id,
             @RequestBody Student student
     ) {
-        return success(studentService.updateStudent(id, student));
+        return ApiResponse.success(studentService.updateStudent(id, student));
     }
 
     // 删除学生（DELETE /api/students/{id}）
@@ -57,15 +58,4 @@ public class StudentController {
     }
 
     // 复用成功响应工具方法（同CourseController）
-    private ResponseEntity<Map<String, Object>> success(Object data) {
-        return success(data, HttpStatus.OK);
-    }
-
-    private ResponseEntity<Map<String, Object>> success(Object data, HttpStatus status) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("code", 200);
-        response.put("message", "Success");
-        response.put("data", data);
-        return new ResponseEntity<>(response, status);
-    }
 }
