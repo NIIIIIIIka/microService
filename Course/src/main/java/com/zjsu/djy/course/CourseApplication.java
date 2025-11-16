@@ -15,6 +15,7 @@ public class CourseApplication {
     private final CourseService courseService;
 
     public static void main(String[] args) {
+
         SpringApplication.run(CourseApplication.class, args);
     }
 
